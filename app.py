@@ -1,7 +1,7 @@
 import gradio as gr
 import torch
 from transformers import AutoTokenizer
-from huggingface_hub import hf_hub_download  # Import the downloader
+from huggingface_hub import hf_hub_download
 
 # Import the model architecture from your model.py file
 from model import LlamaForCausalLM, ModelConfig
@@ -11,8 +11,8 @@ from model import LlamaForCausalLM, ModelConfig
 MODEL_REPO_ID = "DineshSundaram/smollm2_135M"
 CHECKPOINT_FILENAME = "model_final_5000.pt"
 
-# Use the tokenizer from the Hub
-TOKENIZER_PATH = "SmollM/135M"
+# Use a valid public tokenizer from the Hub to fix the error
+TOKENIZER_PATH = "gpt2"
 MAX_SEQUENCE_LENGTH = 8192  # Should match the model's max_position_embeddings
 
 # --- Global Variables ---
@@ -34,14 +34,20 @@ def load_model_and_tokenizer():
     print(f"Using device: {device}")
 
     # Load tokenizer from the Hub
-    tokenizer = AutoTokenizer.from_pretrained(TOKENIZER_PATH)
-    if tokenizer.pad_token is None:
-        tokenizer.pad_token = tokenizer.eos_token
-        print("Tokenizer pad_token set to eos_token.")
+    try:
+        tokenizer = AutoTokenizer.from_pretrained(TOKENIZER_PATH)
+        if tokenizer.pad_token is None:
+            tokenizer.pad_token = tokenizer.eos_token
+            print("Tokenizer pad_token set to eos_token.")
+    except Exception as e:
+        print(f"Error loading tokenizer: {e}")
+        return
 
     # Load model configuration
     model_config = ModelConfig()
     model_config.pad_token_id = tokenizer.pad_token_id
+    # Adjust vocab size to match the new tokenizer
+    model_config.vocab_size = tokenizer.vocab_size 
 
     # Instantiate the model
     # Use float16 for inference as it's faster and uses less memory
@@ -61,7 +67,14 @@ def load_model_and_tokenizer():
         )
         print(f"Loading checkpoint from downloaded file: {checkpoint_path}")
         checkpoint = torch.load(checkpoint_path, map_location=device)
-        model.load_state_dict(checkpoint['model_state_dict'])
+        
+        # Adjust for potential vocab size mismatch between training and new tokenizer
+        original_vocab_size = checkpoint['model_state_dict']['lm_head.weight'].shape[0]
+        if original_vocab_size != model_config.vocab_size:
+            print(f"Warning: Vocab size mismatch. Trained: {original_vocab_size}, Tokenizer: {model_config.vocab_size}. Adjusting model head.")
+            model.resize_token_embeddings(model_config.vocab_size)
+
+        model.load_state_dict(checkpoint['model_state_dict'], strict=False)
         print("Model state loaded successfully.")
     except Exception as e:
         print(f"An error occurred while downloading or loading the model state: {e}")
@@ -143,8 +156,7 @@ if __name__ == "__main__":
         outputs=gr.Textbox(lines=5, label="Generated Text"),
         title="SmollM-135M Language Model",
         description="This is a demo of a 135M parameter Llama-style model. "
-                    "It was trained from scratch on the provided `input-1.txt` file. "
-                    "Type a prompt and see what it generates next!",
+                    "It was trained from scratch and is now running with a standard GPT-2 tokenizer.",
     
     )
 
