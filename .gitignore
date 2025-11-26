@@ -1,0 +1,38 @@
+# Python virtual environment
+.venv/
+venv/
+ENV/
+env/
+
+# Large model and data files - should be downloaded separately
+SmolLM2-135M/
+smollm_demo.py
+smollm2_model.py
+
+# Model checkpoints
+checkpoints/
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# IDE and editor directories
+.vscode/
+.idea/
+.project
+.pyright/
+
+# Build and distribution artifacts
+build/
+dist/
+*.egg-info/
+*.egg
+
+# OS-specific files
+.DS_Store
+Thumbs.db

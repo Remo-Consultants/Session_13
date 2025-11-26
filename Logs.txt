@@ -1,0 +1,78 @@
+Using device: cuda
+Initializing model in float32 for mixed-precision training.
+Total training sequences generated: 9
+
+--- Starting Initial Training ---
+Iteration 100/5000, Loss: 31.4173
+Iteration 200/5000, Loss: 21.7289
+Iteration 300/5000, Loss: 14.5357
+Iteration 400/5000, Loss: 11.9046
+Iteration 500/5000, Loss: 9.9928
+Checkpoint saved at checkpoints\model_checkpoint_500.pt
+Iteration 600/5000, Loss: 9.4807
+Iteration 700/5000, Loss: 7.9402
+Iteration 800/5000, Loss: 7.1853
+Iteration 900/5000, Loss: 6.5923
+Iteration 1000/5000, Loss: 7.8161
+Checkpoint saved at checkpoints\model_checkpoint_1000.pt
+Iteration 1100/5000, Loss: 6.0631
+Iteration 1200/5000, Loss: 5.7473
+Iteration 1300/5000, Loss: 5.8958
+Iteration 1400/5000, Loss: 5.4149
+Iteration 1500/5000, Loss: 5.2917
+Checkpoint saved at checkpoints\model_checkpoint_1500.pt
+Iteration 1600/5000, Loss: 4.3931
+Iteration 1700/5000, Loss: 5.2131
+Iteration 1800/5000, Loss: 3.2277
+Iteration 1900/5000, Loss: 2.7828
+Iteration 2000/5000, Loss: 1.7538
+Checkpoint saved at checkpoints\model_checkpoint_2000.pt
+Iteration 2100/5000, Loss: 0.8362
+Iteration 2200/5000, Loss: 0.1121
+Iteration 2300/5000, Loss: 0.0646
+Iteration 2400/5000, Loss: 0.0221
+Iteration 2500/5000, Loss: 0.0357
+Checkpoint saved at checkpoints\model_checkpoint_2500.pt
+Iteration 2600/5000, Loss: 0.0246
+Iteration 2700/5000, Loss: 0.0316
+Iteration 2800/5000, Loss: 0.0253
+Iteration 2900/5000, Loss: 0.0379
+Iteration 3000/5000, Loss: 0.0382
+Checkpoint saved at checkpoints\model_checkpoint_3000.pt
+Iteration 3100/5000, Loss: 0.0306
+Iteration 3200/5000, Loss: 0.0276
+Iteration 3300/5000, Loss: 0.0096
+Iteration 3400/5000, Loss: 0.0376
+Iteration 3500/5000, Loss: 0.0244
+Checkpoint saved at checkpoints\model_checkpoint_3500.pt
+Iteration 3600/5000, Loss: 0.0289
+Iteration 3700/5000, Loss: 0.0045
+Iteration 3800/5000, Loss: 0.0085
+Iteration 3900/5000, Loss: 0.0078
+Iteration 4000/5000, Loss: 0.0041
+Checkpoint saved at checkpoints\model_checkpoint_4000.pt
+Iteration 4100/5000, Loss: 0.0083
+Iteration 4200/5000, Loss: 0.0014
+Iteration 4300/5000, Loss: 0.0002
+Iteration 4400/5000, Loss: 0.0004
+Iteration 4500/5000, Loss: 0.0001
+Checkpoint saved at checkpoints\model_checkpoint_4500.pt
+Iteration 4600/5000, Loss: 0.0004
+Iteration 4700/5000, Loss: 0.0092
+Iteration 4800/5000, Loss: 0.0088
+Iteration 4900/5000, Loss: 0.0042
+Iteration 5000/5000, Loss: 0.0092
+Checkpoint saved at checkpoints\model_checkpoint_5000.pt
+Final checkpoint saved at checkpoints\model_final_5000.pt
+
+--- Resuming Training from Final Checkpoint for 50 more iterations ---
+Resuming from iteration: 5000
+Additional Iteration 5010, Loss: 0.0015
+Additional Iteration 5020, Loss: 0.0001
+Additional Iteration 5030, Loss: 0.0002
+Additional Iteration 5040, Loss: 0.0000
+Additional Iteration 5050, Loss: 0.0004
+
+--- Training complete. Checking output with the latest model state ---
+Input text: 'The quick brown fox'
+Predicted next token: ' fox'
