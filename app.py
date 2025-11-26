@@ -1,14 +1,19 @@
 import gradio as gr
 import torch
 from transformers import AutoTokenizer
+from huggingface_hub import hf_hub_download  # Import the downloader
 
 # Import the model architecture from your model.py file
 from model import LlamaForCausalLM, ModelConfig
 
 # --- Configuration ---
-CHECKPOINT_PATH = "checkpoints/model_final_5000.pt"
-TOKENIZER_PATH = "./SmolLM2-135M"
-MAX_SEQUENCE_LENGTH = 8192 # Should match the model's max_position_embeddings
+# Point to your Hugging Face Model Hub repository
+MODEL_REPO_ID = "DineshSundaram/smollm2_135M"
+CHECKPOINT_FILENAME = "model_final_5000.pt"
+
+# Use the tokenizer from the Hub
+TOKENIZER_PATH = "SmollM/135M"
+MAX_SEQUENCE_LENGTH = 8192  # Should match the model's max_position_embeddings
 
 # --- Global Variables ---
 model = None
@@ -28,7 +33,7 @@ def load_model_and_tokenizer():
     device = torch.device(device_type)
     print(f"Using device: {device}")
 
-    # Load tokenizer
+    # Load tokenizer from the Hub
     tokenizer = AutoTokenizer.from_pretrained(TOKENIZER_PATH)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
@@ -47,20 +52,21 @@ def load_model_and_tokenizer():
         print("Initializing model in float32 for inference.")
         model = LlamaForCausalLM(model_config).to(device)
     
-    # Load the checkpoint
-    print(f"Loading checkpoint from: {CHECKPOINT_PATH}")
+    # Download and load the checkpoint from the Hub
+    print(f"Downloading checkpoint '{CHECKPOINT_FILENAME}' from repo '{MODEL_REPO_ID}'")
     try:
-        checkpoint = torch.load(CHECKPOINT_PATH, map_location=device)
+        checkpoint_path = hf_hub_download(
+            repo_id=MODEL_REPO_ID,
+            filename=CHECKPOINT_FILENAME
+        )
+        print(f"Loading checkpoint from downloaded file: {checkpoint_path}")
+        checkpoint = torch.load(checkpoint_path, map_location=device)
         model.load_state_dict(checkpoint['model_state_dict'])
         print("Model state loaded successfully.")
-    except FileNotFoundError:
-        print(f"ERROR: Checkpoint file not found at {CHECKPOINT_PATH}. The app will not work.")
+    except Exception as e:
+        print(f"An error occurred while downloading or loading the model state: {e}")
         # Create a dummy model so the app doesn't crash on startup
         model = LlamaForCausalLM(model_config).to(device)
-    except Exception as e:
-        print(f"An error occurred while loading the model state: {e}")
-        model = LlamaForCausalLM(model_config).to(device)
-
 
     # Set the model to evaluation mode
     model.eval()
